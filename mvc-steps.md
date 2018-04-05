@@ -10,11 +10,12 @@
 9. create a schema file, controller file, seeds.json file, seed.js file, and db connection file.
 10. In the index, bring in all the needed boilerplate:
 ```js
-const app = express()
+const express = require('express')
 const hbs = require('hbs')
 const parser = require('body-parser')
 const Controller = require('./controllers/restaurants.js')
 const methodOverride = require('method-override')
+const app = express()
 
 app.set('view engine', 'hbs')
 
@@ -63,7 +64,9 @@ Restaurant
 ```
 14. Add your controller boilerplate info
 ```js
-const express = require('express')
+const router = require('express').Router()
 const db = require('../db/connection.js')
 const Restaurants = require('../models/schema.js')
+
+module.exports = router
 ```
