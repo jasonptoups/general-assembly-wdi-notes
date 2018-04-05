@@ -203,12 +203,12 @@ In todo.js
 ```js
 const mongoose = require('./connection')
 // need the ./ because otherwise it would grab a node module
-const mongoose = new mongoose.Schema({
+const ToDoSchema = new mongoose.Schema({
   title: String,
   complete: Boolean
 })
 // This is our blueprint for our to-do items. Each will have a title and whether it's complete. 
-const Todo = mongoose.models('Todo', ToDoSchema)
+const Todo = mongoose.model('Todo', ToDoSchema)
 // creates a variable name for a collection in our todo database. Applies the schema we declared
 module.exports = Todo
 ```
@@ -265,6 +265,11 @@ app.use('/', todosController)
 app.listen(4004, () => console.log('running on port 4004'))
 // This is where our node express app will run
 ```
+## Routes
+We will use "routes" to define the different things a user can do on our website
+
+### Index Route
+In this route, we will show all the to do items. 
 In the Controller todos.js:
 ```js
 const router = require('express').Router()
@@ -282,3 +287,127 @@ router.get('/', (req, res) => {
     // This is saying render the index.hbs view and pass to it the todos variable. 
 })
 ```
+
+### Show Route
+In this route, we will show just one to-do
+In the Controller todos.js:
+```js
+router.get('/:id', (req, res) => {
+  Todo
+    .findOne({ _id: req.params.id })
+    .then( todo => {
+      res.render('show', { todo })
+    })
+})
+```
+In the views folder, create a new file called show.hbs
+```html
+<h1> {{ todo.title }} </h1>
+```
+
+### Create Route
+In this route, we will be able to add a to-do
+First, install body-parser
+In the Controller todos.js
+```js
+router.get('/new', (req, res) => {
+  res.render('new')
+})
+```
+In the index.js file, we have to bring in body parser:
+```js
+const parser = require('body-parser')
+app.use(parser.urlencoded({ extended: true}))
+// this has to be above the controller
+```
+We have to create a router for the post '/' route first. In the controller:
+```js
+router.post('/', (req, res) => {
+  Todo.create(req.body)
+  // .create is a mongoose method
+  // req.body is just a method from body-parser
+    .then(todo => {
+      res.redirect('/')
+      // res.redirect resets the request response cycle all over again. res.render does not.
+    })
+})
+```
+In our new.hbs file, we need to create a form:
+```html
+<h1>New To Do</h1>
+<form action="/" method="post">
+  <label for="">Title:</label>
+  // This appears to the left
+  <input type="text" name="title">
+  // this will be the text input field. "title" has to match our schema. 
+  <input type="submit" value="Create">
+  // this has to be a submit. Automatically works with 'enter'
+</form>
+```
+### Put Route (Update Route)
+HTML does not have a native update route, the way the form has post and get. So we have to install a package
+In bash:
+```bash
+$ npm install method-override
+```
+In our index.js file, we have to install it:
+```js
+const methodOverride = require('method-override')
+app.use(methodOverride('_method'))
+// this defines the method we're using on the URLs. Has to be above controller
+```
+In our controller, add a route to get the edit/id page, which will render a form. And we need to add a route for the put on the id page:
+```js
+router.get('/edit/:id', (req, res) => {
+  // we're writing what the /edit/:id page should look like
+  Todo
+    .findById(req.params.id)
+    // Grab the db item that matches the id
+    .then(todo => {
+      res.render('edit', { todo })
+    })
+    // render the edit page
+})
+router.put('/:id', (req, res) => {
+  Todo.findOneAndUpdate(
+    {_id: req.params.id}, 
+    // the first argument is what to search for
+    {
+      title: req.body.title,
+      complete: req.body.complete === 'on'
+    }, 
+    // the second argument is what we're updating using body parser
+    {new: true}
+    )
+    // the third argument tells our database to update the entire record with this new information and record it as a new record
+    .then(todo => {
+      res.redirect('/')
+    })
+    // then, we redirect to the homepage
+})
+```
+We have to update the Edit view so it has a form
+```js
+<h2>Edit To Do:</h2>
+<form action="/{{todo._id}}?_method=put" method="post">
+  <label>Title:</label>
+  <input type="text" name="title" value="{{todo.title}}">
+  <label>Complete:</label>
+  {{#if todo.complete}}
+    <input type="checkbox" name="complete" checked>
+  {{else}}
+    <input type="checkbox" name="complete">
+  {{/if}}
+  <input type="submit" value="Update">
+</form>
+{{! // Use a post form and then modify it to be a put
+// ?_method=put is telling our middleware
+// /{{todo.id}} says we're doing a put method on the unique id (sort of like the show method)
+// the ? and & gives us optional parameters. We don't want a bunch of slashes. 
+// Adding "checked" allows it to show as checked --}}
+```
+
+### Methods
+res.render: Shows a view
+res.send: 
+res.redirect: Resets the request response cycle all over again.
