@@ -24,7 +24,7 @@ app.use(parser.urlencoded({extended: true}))
 
 app.use('/', Controller)
 
-app.listen(4001)
+app.listen(4001, () => console.log(`running on port 4001`))
 ```
 11. Set up the database connection:
 ```js
@@ -64,7 +64,8 @@ Restaurant
 ```
 14. Add your controller boilerplate info
 ```js
-const router = require('express').Router()
+const express = require('express')
+const router = express.Router()
 const db = require('../db/connection.js')
 const Restaurants = require('../models/schema.js')
 

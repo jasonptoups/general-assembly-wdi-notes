@@ -1,4 +1,4 @@
-# APIs and Ajax
+# Bringing in APIs and Ajax
 ## What is an API?
 So far, we have been rendering static pages that only change when the page refreshes. It would still only change if we changed the data on the backend.  
 We can use APIs to access third-party data. We can also use APIs to make our page dynamic. We can pass through variables to the front end. 
@@ -116,3 +116,91 @@ destroy.addEventListener('click', () => {
     .catch(err => console.error(err))
 })
 ```
+
+# Express APIs
+## MVC review
+* __Model__: Encapsulates information from the database and lets us query it and change data
+* __Views__: User interface. Defines how the page renders
+* __Controllers__: Defines how routes are handled
+
+## Setting up APIs in your website
+Aside on models. If you export the model like this::
+```js
+mongoose.model('Bookmark', BookmarkSchema)
+module.exports = mongoose
+```
+Then you have you do stuff in the controller like this:
+```js
+const mongoose = require('./models/schema.js')
+const Bookmarks = mongoose.model('Bookmarks')
+```
+
+### Get APIs
+In the controller:
+```js
+router.get('/', (req, res) => {
+  Bookmark
+    .find({})
+    .then(bookmarks => res.json(bookmarks))
+    // this is really the only change. You're just responding by sending back a json object
+    .catch(err => console.error(err))
+})
+```
+
+### POST to API
+In the controller:
+```js
+router.post('/', (req, res) => {
+  Bookmark
+    .create(req.body)
+    .then(bookmarks => res.json(bookmarks))
+})
+```
+In the index, bring in body parser, but tell it to parse json
+```js
+const parser = require('body-parser')
+app.use(parser.json())
+```
+Then, you can use Postman if you want. It just makes it easier to not have to make an html form and javascript, etc:
+1. Open Postman
+2. Change the dropdown from Get to Post
+3. Update the headers to add: ```"Content-Type": "application/json"```
+4. Click Body and change it to raw
+5. Enter a new object that you intend to insert. E.g.,: 
+```js
+{
+	"title": "example dot com",
+	"url": "http://www.example.com"
+}
+```
+* We can use PostMan to make post and other requests to the database to quickly make changes in it. 
+* But to do so, you need to define a post route in the controller. 
+
+### PUT to API
+In the controller: 
+```js
+router.put('/:title', (req, res) => {
+  Bookmark
+    .findOneAndUpdate({title: req.params.title}, req.body, {new:true})
+    // the first argument is what to search for, the second is what to replace with, third is optional. Says to return new object instead of old.
+    .then(bookmark => res.json(bookmark))
+})
+```
+This will only update the fields you list. It won't affect the fields you don't mention.
+
+
+### DELETE
+In the controller, add a delete route. This will return the full list:
+```js
+router.delete('/:title', (req, res) => {
+  Bookmark
+    .findOneAndRemove({title: req.params.title})
+    .then(() => {
+      Bookmark
+        .find()
+        .then(all => res.send(all))
+    })
+})
+```
+
+## Connecting front and back-end
