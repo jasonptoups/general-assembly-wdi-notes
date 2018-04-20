@@ -7,5 +7,6 @@
 * Switched to MIT license in 2017
 
 ### Components
-![fixed templates](https://git.generalassemb.ly/ga-wdi-lessons/react-intro/blob/master/images/templates-page.png)
+![fixed templates](https://git.generalassemb.ly/ga-wdi-lessons/react-intro/raw/master/images/templates-page.png)
 ![page builder and componengts](https://git.generalassemb.ly/ga-wdi-lessons/react-intro/raw/master/images/components-page.png)
+
