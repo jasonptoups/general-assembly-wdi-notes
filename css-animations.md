@@ -39,3 +39,19 @@ transition {
   opacity: 0 to 1
   ```
 * Don't animate margin, top/right/bottom/left, or padding directly. It can mess with the layout
+
+## Hover, Active, Focus
+You can use the following:
+```css
+.class:hover {
+  /* engaged when the mouse hovers */
+}
+
+.class:focus {
+  /* engaged when the user clicks (I think) */
+}
+
+.class:active {
+  /* engaged when the user scrolls to a div */
+}
+```
