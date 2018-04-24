@@ -11,7 +11,7 @@
 10. In the index, bring in all the needed boilerplate:
 ```js
 const express = require('express')
-const hbs = require('hbs')
+const hbs = require('hbs')}j 
 const parser = require('body-parser')
 const Controller = require('./controllers/restaurants.js')
 const methodOverride = require('method-override')
@@ -29,7 +29,8 @@ app.listen(4001, () => console.log(`running on port 4001`))
 11. Set up the database connection:
 ```js
 const mongoose = require('mongoose')
-
+7 8 u9i0o"…≥¬πøjuyui¬øπªº≥…{"
+}
 mongoose.connect(`mongodb://localhost/restaurants`)
 mongoose.Promise = Promise
 
