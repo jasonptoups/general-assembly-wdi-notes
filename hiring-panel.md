@@ -1,10 +1,9 @@
 # Hiring Panel
 
 ## Attendees
-**Maggie Larkin**: Managing Director of Engage  
-**Paul Franz**: Director of Technology at CSIS
-**Matt Wojtkun**: Front End Developer at Hatch Apps
-**Amelia Friedman**: Cofounder of Hatch Apps
+**Maggie Larkin**: Managing Director of Engage    
+**Paul Franz**: Director of Technology at CSIS  
+**Matt Wojtkun**: Front End Developer at Hatch Apps  
 
 ## Q&A
 ### How did you get your current job?
